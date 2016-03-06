@@ -1,0 +1,176 @@
+﻿@using UCRMS_MVC.Models
+@model UCRMS_MVC.Models.ViewResultByRegNo
+
+@{
+    Layout = null;
+    List<Student> allStudents = ViewBag.allStudents;
+  }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>UCRMS</title>
+    <meta name="description" content="A description of your website">
+    <meta name="keywords" content="keyword1, keyword2, keyword3">
+    <link href="~/StyleSheet.css" rel="stylesheet" />
+    <link href="~/Content/jquery.datepick.css" rel="stylesheet" />
+    <style>
+        .ErrorMessage {
+            color: red;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="wrapper">
+
+        <div id="header">
+
+            <div class="banner_img">
+                <h1>University Course and Result Management System </h1>
+            </div>
+
+        </div>
+
+        <div class="navigation navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Department", "Index", "Department")</li>
+                <li>@Html.ActionLink("Course", "Index", "Course")</li>
+                <li>@Html.ActionLink("Teacher", "Index", "Teacher")</li>
+                <li>@Html.ActionLink("Student", "Index", "Student")</li>
+                <li>@Html.ActionLink("Enroll Course", "Enroll", "Enroll")</li>
+                <li>@Html.ActionLink("Allocate Rooms", "Index", "AllocateClassRoom")</li>
+            </ul>
+        </div>
+
+      
+        <div id="page_content">
+            @using (Html.BeginForm())
+            {
+                <form>
+                    <fieldset>
+                        <legend><h3>View Student Result:</h3></legend>
+                        <br />
+                        <table>
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(d => d.RegistationNo)
+                                </td>
+                                <td>
+                                    <select name="RegistrationId" id="RegistrationId">
+                                        <option value="">--Select One--</option>
+                                        @foreach (var student in allStudents)
+                                        {
+                                            <option value="@student.RegistationNo">@student.RegistationNo</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(d => d.StudentName)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(d => d.StudentName)
+                                </td>
+                                <td class="ErrorMessage">
+                                    @Html.ValidationMessageFor(d => d.StudentName)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(d => d.StudentEmail)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(d => d.StudentEmail)
+                                </td>
+                                <td class="ErrorMessage">
+                                    @Html.ValidationMessageFor(d => d.StudentEmail)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(d => d.DeptCode)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(d => d.DeptCode)
+                                </td>
+                                <td class="ErrorMessage">
+                                    @Html.ValidationMessageFor(d => d.DeptCode)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="submit" value="Make PDF" />
+                                </td>
+                            <tr>
+                                <table id="DetailBody" class="table1">
+                                    <thead>
+                                        <tr class="h2">
+                                            <th >Course Code</th>
+                                            <th>Name</th>
+                                            <th>Grade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+
+                            </table>
+                    </fieldset>
+                </form>
+            }
+            <div class="clear"></div>
+
+            <!--start footer from here-->
+            <div id="footer">
+
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-2.2.0.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#RegistrationId").change(function () {
+                var id = $("#RegistrationId").val();
+                $("#StudentName").empty();
+                $("#StudentEmail").empty();
+                $("#DeptCode").empty();
+                
+                $("#CourseCode").empty();
+                $("#CourseName").empty();
+                $("#GradeLetter").empty();
+                $("#DetailBody tbody").empty();
+                var json = { regNo: id };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetResultDetailByRegNo", "Student")',
+                    contentType: "application/json; cahrset=utf-8",
+                    data: JSON.stringify(json),
+
+                    success: function (student) {
+                        $.each(student, function (key, value) {
+                            $("#StudentName").val(value.StudentName);
+                            $("#StudentEmail").val(value.StudentEmail);
+                            $("#DeptCode").val(value.DeptCode);
+                            var tr = '<tr>' +
+                                '<td>' + value.CourseCode + '</td>' +
+                                '<td>' + value.CourseName + '</td>' +
+                                '<td>' + value.GradeLetter + '</td>' +
+                                '</tr>';
+                            $("#DetailBody tbody").append(tr);
+                            
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    </body>
+</html>

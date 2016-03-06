@@ -1,0 +1,254 @@
+﻿@using UCRMS_MVC.Models
+
+
+@{
+    Layout = null;
+    List<Department> AllDepartment = ViewBag.AllDepartment;
+    string message = ViewBag.message;
+   }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>UCRMS</title>
+    <meta name="description" content="A description of your website">
+    <meta name="keywords" content="keyword1, keyword2, keyword3">
+    <link href="~/StyleSheet.css" rel="stylesheet" />
+    <style>
+        .ErrorMessage {
+            color: red;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="wrapper">
+
+        <div id="header">
+
+            <div class="banner_img">
+                <h1>University Course and Result Management System </h1>
+            </div>
+
+        </div>
+
+        <div class="navigation navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Department", "Index", "Department")</li>
+                <li>@Html.ActionLink("Course", "Index", "Course")</li>
+                <li>@Html.ActionLink("Teacher", "Index", "Teacher")</li>
+                <li>@Html.ActionLink("Student", "Index", "Student")</li>
+                <li>@Html.ActionLink("Enroll Course", "Enroll", "Enroll")</li>
+                <li>@Html.ActionLink("Allocate Rooms", "Index", "AllocateClassRoom")</li>
+            </ul>
+        </div>
+
+       
+        <div id="page_content">
+          
+                <form id="" method="POST">
+                    <fieldset>
+                        <legend><h3>Course Assign to Teacher:</h3></legend>
+                        <br />
+                        <table>
+                            <tr>
+                                <td>
+                                    <label for="Department">Department</label>
+                                </td>
+                                <td>
+                                    <select name="DeptId" id="DeptId">
+                                        <option value="">--Select One--</option>
+                                        @foreach (Department department in AllDepartment)
+                                        {
+                                            <option value="@department.DeptId">@department.DeptCode</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="Teacher">TeacherId</label>
+                                </td>
+                                <td>
+                                    <select name="Teacher" id="Teacher">
+                                        <option value="">--Select One--</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="CreditToBeTaken">CreditToBeTaken</label>
+                                </td>
+                                <td>
+                                    <input type="text" name="CreditToBeTaken" id="CreditToBeTaken" readonly="readonly" />
+                                </td>
+                              </tr>
+                            <tr>
+                                <td>
+                                    <label for="RemainingCredit">RemainingCredit</label>
+                                </td>
+                                <td>
+                                    <input type="text" name="RemainingCredit" id="RemainingCredit" readonly="readonly" />
+                                </td>
+                                
+                            </tr>
+                          
+                            <tr>
+                                <td>
+                                    <label for="CourseCode">Course code</label>
+                                </td>
+                                <td>
+                                    <select name="CourseCode" id="CourseCode">
+                                        <option value="">Select Course ...</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="CourseName">CourseName</label>
+                                </td>
+                                <td>
+                                    <input type="text" name="CourseName" id="CourseName" readonly="readonly" />
+                                </td>
+                              
+                            </tr> 
+                            <tr>
+                                <td>
+                                    <label for="CourseCredit">CourseCredit</label>
+                                </td>
+                                <td>
+                                    <input type="text" name="CourseCredit" id="CourseCredit" readonly="readonly" />
+                                </td>
+                               </tr>
+                            <tr>
+                            <td>
+                                <input type="submit" value="Save" />
+                                @message
+                            </td>
+                                </tr>
+                            <tr>
+                                <td>
+                                    @Html.ActionLink("Back", "Index", "Teacher")
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </form>
+            <div class="clear"></div>
+
+            <!--start footer from here-->
+            <div id="footer">
+
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-2.2.0.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#DeptId").change(function () {
+                var Dept = $("#DeptId").val();
+                $("#Teacher").empty();
+                var json = { departmentId: Dept };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetTeacherByDepartmentId", "CourseAssign")',
+                    contentType: "application/json; cahrset=utf-8",
+                    data: JSON.stringify(json),
+
+                    success: function(data) {
+                        //alert(data);
+                        $("#Teacher").append('<option value=' + null + '>Select Teacher ...</option>');
+                        $.each(data, function (key, value) {
+                           
+
+                            $("#Teacher").append('<option value=' + value.TeacherId + '>' + value.TeacherName + '</option>');
+                        });
+                    }
+
+                });
+
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#DeptId").change(function () {
+                var Dept = $("#DeptId").val();
+                $("#CourseCode").empty();
+                var json = { departmentId: Dept };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetCourseByDepartmentId", "CourseAssign")',
+                    contentType: "application/json; cahrset=utf-8",
+                    data: JSON.stringify(json),
+
+                    success: function(data) {
+                        //alert(data);
+                        $("#CourseCode").append('<option value=' + null + '>Select Course ...</option>');
+                        $.each(data, function (key, value) {
+                           
+                            $("#CourseCode").append('<option value=' + value.CourseId + '>' + value.CourseCode + '</option>');
+                        });
+                    }
+
+                });
+
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#CourseCode").change(function () {
+                var course = $("#CourseCode").val();
+                $("#CourseName").empty();
+                $("#CourseCredit").empty();
+                var json = { courseId: course };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetCourseDetails", "CourseAssign")',
+                    contentType: "application/json; cahrset=utf-8",
+                    data: JSON.stringify(json),
+
+                    success: function (courseDetails) {
+                        $.each(courseDetails, function (key, courseDetail) {
+                            $("#CourseName").val(courseDetail.CourseName);
+                            $("#CourseCredit").val(courseDetail.CourseCredit);
+                        });
+
+                    }
+
+                });
+
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#Teacher").change(function () {
+                var teacherId = $("#Teacher").val();
+
+                var json = { teacherId: teacherId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetTeacherDeTailById", "CourseAssign")',
+                    contentType: "application/json; cahrset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        console.log(data);
+
+                        $("#CreditToBeTaken").val(data.CreditToBeTaken);
+                        $("#RemainingCredit").val(data.CreditRemaining);
+
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

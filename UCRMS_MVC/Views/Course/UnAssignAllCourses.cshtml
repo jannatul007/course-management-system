@@ -1,0 +1,88 @@
+﻿@using System.ServiceModel.Channels
+@using UCRMS_MVC.Models
+@model UCRMS_MVC.Models.ViewResultByRegNo
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>UCRMS</title>
+    <meta name="description" content="A description of your website">
+    <meta name="keywords" content="keyword1, keyword2, keyword3">
+    <link href="~/StyleSheet.css" rel="stylesheet" />
+    <link href="~/Content/jquery.datepick.css" rel="stylesheet" />
+    <style>
+        .ErrorMessage {
+            color: red;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="wrapper">
+
+        <div id="header">
+
+            <div class="banner_img">
+                <h1>University Course and Result Management System </h1>
+            </div>
+
+        </div>
+
+        <div class="navigation navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Department", "Index", "Department")</li>
+                <li>@Html.ActionLink("Course", "Index", "Course")</li>
+                <li>@Html.ActionLink("Teacher", "Index", "Teacher")</li>
+                <li>@Html.ActionLink("Student", "Index", "Student")</li>
+                <li>@Html.ActionLink("Enroll Course", "Enroll", "Enroll")</li>
+                <li>@Html.ActionLink("Allocate Rooms", "Index", "AllocateClassRoom")</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center;background: silver;font-size: larger;">
+            <input id="UnallocateButton" type="button" value="Unallocate All Courses" style="width: 250px;height: 200px; margin: 20px auto;font-size: larger;" />
+        </div>
+        <div>
+            <tr>
+                <td>
+                    @Html.ActionLink("Back", "Index", "Course")
+                </td>
+            </tr>
+        </div>
+
+    </div>
+    <script src="~/Scripts/jquery-2.2.0.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#UnallocateButton").click(function () {
+                var res = confirm("Are you sure to UnAssign Course info?");
+                if (res == false) {
+                    return false;
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("AjaxUnAssignAllCourses", "Course")',
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if (data) {
+                                alert("All Courses has been UnAssign successfully.");
+                            } else {
+                                alert("Unable to UnAssign, try again.");
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

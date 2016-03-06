@@ -1,0 +1,187 @@
+﻿@using UCRMS_MVC.Models
+@model UCRMS_MVC.Models.AllocationClassRoom
+@{
+    Layout = null;
+    List<Department> aDepartments = ViewBag.AllDepartment;
+    List<Course> aCourses = ViewBag.allCourses;
+    List<Room> aRooms = ViewBag.allRoom;
+    List<Day> aDays = ViewBag.allDays;
+ 
+   }
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>UCRMS</title>
+    <meta name="description" content="A description of your website">
+    <meta name="keywords" content="keyword1, keyword2, keyword3">
+    <link href="~/StyleSheet.css" rel="stylesheet" />
+    <link href="~/Minimal-jQuery-Time-Picker-Plugin-with-jQuery-TimePicki/css/timepicki.css" rel="stylesheet" />
+    <link href="~/Minimal-jQuery-Time-Picker-Plugin-with-jQuery-TimePicki/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <script src="~/Minimal-jQuery-Time-Picker-Plugin-with-jQuery-TimePicki/js/jquery.min.js"></script>
+    <script src="~/Minimal-jQuery-Time-Picker-Plugin-with-jQuery-TimePicki/js/timepicki.js"></script>
+    <style>
+        .ErrorMessage {
+            color: red;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="wrapper">
+
+        <div id="header">
+
+            <div class="banner_img">
+                <h1>University Course and Result Management System </h1>
+            </div>
+            </div>
+        <div class="navigation navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#">Home</a></li>
+                <li>@Html.ActionLink("Department", "Index", "Department")</li>
+                <li>@Html.ActionLink("Course", "SaveCourse", "Course")</li>
+                <li>@Html.ActionLink("Teacher", "Index", "Teacher")</li>
+                <li>@Html.ActionLink("Student", "Index", "Student")</li>
+                <li>@Html.ActionLink("Enroll Course", "Enroll", "Enroll")</li>
+                <li>@Html.ActionLink("Allocate Rooms", "Index", "AllocateClassRoom")</li>
+                <li><a href="#">Schedule</a></li>
+            </ul>
+        </div>
+       <div id="page_content">
+            @using (Html.BeginForm())
+            {
+                <form>
+                    <fieldset>
+                        <legend><h3>Allocate Room:</h3></legend>
+                        <br />
+                        <table>
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(d => d.DeptId)
+                                </td>
+                                <td>
+                                    <select name="DeptId" id="DeptId">
+                                        <option value="">--Select One--</option>
+                                        @foreach (Department department in aDepartments)
+                                        {
+                                            <option value="@department.DeptId">@department.DeptCode</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(d => d.CourseId)
+                                </td>
+                                <td>
+                                    <select name="CourseId" id="CourseId">
+                                        <option value="">--Select One--</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(d => d.RoomId)
+                                </td>
+                                <td>
+                                    <select name="RoomId" id="RoomId">
+                                        <option value="">--Select One--</option>
+                                        @foreach (Room room in aRooms)
+                                        {
+                                            <option value="@room.RoomId">@room.RoomNo</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(d => d.DayId)
+                                </td>
+                                <td>
+                                    <select name="DayId" id="DayId">
+                                        <option value="">--Select One--</option>
+                                        @foreach (Day day in aDays)
+                                        {
+                                            <option value="@day.DayId">@day.DayName</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>@Html.LabelFor(d => d.StartTime) </td>
+                                <td>@Html.TextBoxFor(d => d.StartTime)</td>
+                                <td>@Html.ValidationMessageFor(m => m.StartTime)</td>
+                               </tr>
+                            <tr>
+                                <td>@Html.LabelFor(d => d.EndTime) </td>
+                                <td>@Html.TextBoxFor(d => d.EndTime)</td>
+                                <td>@Html.ValidationMessageFor(m => m.EndTime)</td>
+                                @*<input type="text" name="time">*@
+                            </tr>
+                            <tr class="message">
+                                <td colspan="3">
+                                    @if (ViewBag.message != null)
+                                    {
+                                        @ViewBag.message
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @*<input type="submit" value="Allocate"/>*@
+                                    <button type="submit" value="Allocate"  >Allocate</button>
+                               
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.ActionLink("Back", "Index", "AllocateClassRoom")
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </form>
+            }
+            <div class="clear"></div>
+            <!--start footer from here-->
+            <div id="footer">
+                </div>
+        </div>
+    </div>
+    @*<script src="~/Scripts/jquery-2.2.0.js"></script>*@
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#DeptId").change(function () {
+                var Dept = $("#DeptId").val();
+                $("#CourseId").empty();
+                var json = { departmentId: Dept };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetCourseByDepartmentId", "AllocateClassRoom")',
+                    contentType: "application/json; cahrset=utf-8",
+                    data: JSON.stringify(json),
+
+                    success: function (data) {
+                        $("#CourseId").append('<option value=' + null + '>Select Course ...</option>');
+                        //alert(data);
+                           $.each(data, function(key, value) {
+                               $("#CourseId").append('<option value=' + value.CourseId + '>' + value.CourseCode + '</option>');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    <script >
+        $(function () {
+            $("input").timepicki();
+        });
+    </script>
+
+</body>
+</html>

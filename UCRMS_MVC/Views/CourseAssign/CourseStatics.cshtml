@@ -1,0 +1,125 @@
+﻿@using UCRMS_MVC.Models
+
+@{
+    Layout = null;
+    List<Department> allDepartment = ViewBag.allDepartment;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>UCRMS</title>
+    <meta name="description" content="A description of your website">
+    <meta name="keywords" content="keyword1, keyword2, keyword3">
+    <link href="~/StyleSheet.css" rel="stylesheet" />
+    <style>
+        .ErrorMessage {
+            color: red;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="wrapper">
+
+        <div id="header">
+
+            <div class="banner_img">
+                <h1>University Course and Result Management System </h1>
+            </div>
+
+        </div>
+
+        <div class="navigation navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Department", "Index", "Department")</li>
+                <li>@Html.ActionLink("Course", "Index", "Course")</li>
+                <li>@Html.ActionLink("Teacher", "Index", "Teacher")</li>
+                <li>@Html.ActionLink("Student", "Index", "Student")</li>
+                <li>@Html.ActionLink("Enroll Course", "Enroll", "Enroll")</li>
+                <li>@Html.ActionLink("Allocate Rooms", "Index", "AllocateClassRoom")</li>
+            </ul>
+        </div>
+
+    <div id="page_content">
+            <form method="POST">
+                <fieldset>
+                    <legend><h3>View All Course Statics:</h3></legend>
+                    <br />
+                    <table>
+                        <tr>
+                            <td>
+                                <label id="Departments"> Department</label>
+                            </td>
+                            <td>
+                                <select name="Department" id="Department" >
+                                    <option value="">--Select One--</option>
+                                    @foreach (Department department in allDepartment)
+                                    {
+                                        <option value="@department.DeptId">@department.DeptCode</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+
+                        <table id="CourseInformationTable" class="table1">
+                            <tr>
+                                <th>Code</th>
+                                <th>Name/Title</th>
+                                <th>Semester</th>
+                                <th>Assigned To</th>
+                            </tr>
+                        </table>
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Back", "Index", "Teacher")
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </form>
+            <div class="clear"></div>
+
+            <!--start footer from here-->
+            <div id="footer">
+
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-2.2.0.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script>
+        $(document).ready(function () {
+            
+            $("#Department").change(function () {
+                
+                var deptId = $("#Department").val();
+               
+                $("#CourseInformationTable").empty();
+                $("#CourseInformationTable").append('<tr><th>CourseCode</th><th>CourseName</th><th>SemesterName</th><th>Assigned To</th></tr>');
+                var json = { deptId: deptId };
+                
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ViewAllCourseStatic", "CourseAssign")',
+                    contentType: "application/json; cahrset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        console.log(data);
+
+                        $.each(data, function (key, value) {
+                            $("#CourseInformationTable").append('<tr><td>' + value.CourseCode + '</td><td>' + value.CourseName + '</td><td>' + value.SemesterName + '</td><td>' + value.AssignedTo + '</td></tr>');//append data here
+                        });
+
+                    },
+                   });
+            });
+        });
+    </script>
+</body>
+</html>

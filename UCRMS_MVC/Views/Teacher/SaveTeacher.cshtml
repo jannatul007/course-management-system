@@ -1,0 +1,199 @@
+﻿@using UCRMS_MVC.Models
+@model UCRMS_MVC.Models.Teacher
+@{
+    Layout = null;
+    List<Department> aDepartments = ViewBag.aDepartments;
+    List<Designation> aDesignations = ViewBag.aDesignations;
+    //string message = ViewBag.message;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>UCRMS</title>
+    <meta name="description" content="A description of your website">
+    <meta name="keywords" content="keyword1, keyword2, keyword3">
+    <link href="~/StyleSheet.css" rel="stylesheet" />
+    <style>
+        .ErrorMessage {
+            color: red;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="wrapper">
+
+        <div id="header">
+
+            <div class="banner_img">
+                <h1>University Course and Result Management System </h1>
+            </div>
+
+        </div>
+
+        <div class="navigation navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#">Home</a></li>
+                <li>@Html.ActionLink("Department", "Index", "Department")</li>
+                <li>@Html.ActionLink("Course", "Index", "Course")</li>
+                <li>@Html.ActionLink("Teacher", "Index", "Teacher")</li>
+                <li>@Html.ActionLink("Student", "Index", "Student")</li>
+                <li>@Html.ActionLink("Enroll Course", "Enroll", "Enroll")</li>
+                <li>@Html.ActionLink("Allocate Rooms", "Index", "AllocateClassRoom")</li>
+            </ul>
+        </div>
+
+       
+        <div id="page_content">
+            @using (Html.BeginForm())
+{
+    <form id="teacherSaveForm">
+        <fieldset>
+            <legend><h3>Save Teacher Details:</h3></legend>
+            <br />
+            <table>
+                <tr>
+                    <td>
+                        @Html.LabelFor(x => x.TeacherName)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.TeacherName)
+                    </td>
+                    <td class="ErrorMessage">
+                        @Html.ValidationMessageFor(x => x.TeacherName)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(d => d.Address)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(d => d.Address)
+                    </td>
+                    <td class="ErrorMessage">
+                        @Html.ValidationMessageFor(d => d.Address)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(d => d.Email)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(d => d.Email)
+                    </td>
+                    <td class="ErrorMessage">
+                        @Html.ValidationMessageFor(d => d.Email)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(d => d.ContactNo)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(d => d.ContactNo)
+                    </td>
+                    <td class="ErrorMessage">
+                        @Html.ValidationMessageFor(d => d.ContactNo)
+                    </td>
+                </tr>
+                <tr>
+                    <td>@Html.LabelFor(d => d.DesignationId)</td>
+                    <td>
+                        <select name="DesignationId" id="DesignationId">
+                            <option value=""> --Select One--</option>
+                            @foreach (Designation designation in aDesignations)
+                            {
+                                <option value="@designation.DesignationId">@designation.DesignationName</option>
+                            }
+                        </select>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(d => d.DeptId)
+                    </td>
+                    <td>
+                        <select name="DeptId" id="DeptId">
+                            <option value="">
+                                --Select One--
+                            </option>
+                            @foreach (Department department in aDepartments)
+                            {
+                                <option value="@department.DeptId">@department.DeptCode</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(d => d.CreditToBeTaken)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(d => d.CreditToBeTaken)
+                    </td>
+                    <td class="ErrorMessage">
+                        @Html.ValidationMessageFor(d => d.CreditToBeTaken)
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input type="submit" value="Save" />
+                        <label for="message" class=".message"></label>
+                        @ViewBag.message
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.ActionLink("Back", "Index", "Teacher")
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+}
+            <div class="clear"></div>
+            <!--start footer from here-->
+            <div id="footer">
+
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-2.2.0.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#teacherSaveForm').validate({
+                rules: {
+                    TotalCredit:
+                    {
+                        required: true,
+                        number: true,
+                        min: 1
+                    },
+                    TeacherContact: "number"
+                },
+                messages: {
+                    TotalCredit:
+                        {
+                            required: "Please provide teacher credit",
+                            number: "Only provide numeric value",
+                            min: "Only provide non-negative value"
+                        },
+                    TeacherContact: "Enter Number Only"
+                }
+
+            });
+
+        });
+
+
+    </script>
+</body>
+</html>

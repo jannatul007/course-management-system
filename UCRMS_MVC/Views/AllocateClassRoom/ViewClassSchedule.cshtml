@@ -1,0 +1,118 @@
+﻿@using UCRMS_MVC.Models
+@model UCRMS_MVC.Models.AllocationClassRoom
+@{
+    Layout = null;
+    List<Department> aDepartments = ViewBag.AllDepartment;
+    //string message = ViewBag.message;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>UCRMS</title>
+    <meta name="description" content="A description of your website">
+    <meta name="keywords" content="keyword1, keyword2, keyword3">
+    <link href="~/StyleSheet.css" rel="stylesheet" />
+    <style>
+        .ErrorMessage {
+            color: red;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="wrapper">
+
+        <div id="header">
+
+            <div class="banner_img">
+                <h1>University Course and Result Management System </h1>
+            </div>
+        </div>
+        <div class="navigation navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+               <li>@Html.ActionLink("Department", "Index", "Department")</li>
+                <li>@Html.ActionLink("Course", "Index", "Course")</li>
+                <li>@Html.ActionLink("Teacher", "Index", "Teacher")</li>
+                <li>@Html.ActionLink("Student", "Index", "Student")</li>
+                <li>@Html.ActionLink("Enroll Course", "Enroll", "Enroll")</li>
+                <li>@Html.ActionLink("Allocate Rooms", "Index", "AllocateClassRoom")</li>
+             </ul>
+        </div>
+      
+        <div id="page_content">
+            @using (Html.BeginForm())
+            {
+                <form>
+                    <fieldset>
+                        <legend><h3>View ClassRoom And Allocation Room Information:</h3></legend>
+                        <br />
+                        <table>
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(d => d.DeptId)
+                                </td>
+                                <td>
+                                    <select name="DeptId" id="DeptId">
+                                        <option value="">--Select One--</option>
+                                        @foreach (Department department in aDepartments)
+                                        {
+                                            <option value="@department.DeptId">@department.DeptCode</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                          
+                        </table>
+                        <table id="SchduleTable" class="table1">
+                            <thead>
+                                <tr>
+                                    <th>Course Coude</th>
+                                    <th>Name</th>
+                                    <th>Schedule Info</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Back", "Index", "AllocateClassRoom")
+                            </td>
+                        </tr>
+                    </fieldset>
+                </form>
+            }
+            <div class="clear"></div>
+            <!--start footer from here-->
+            <div id="footer">
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-2.2.0.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#DeptId").change(function () {
+                var Dept = $("#DeptId").val();
+                $('#SchduleTable tbody').empty();
+                var json = { departmentId: Dept };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetClassScheduleDepartmentId", "AllocateClassRoom")',
+                    contentType: "application/json; cahrset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        //alert(data);
+                        $.each(data, function (key, value) {
+
+                            $('#SchduleTable tbody').append('<tr><td>' + value.CourseCode + '</td><td>' + value.CourseName + '</d><td>' + value.ScheduleInfo+'</td><tr>');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>UCRMS</title>
+    <meta name="description" content="A description of your website">
+    <meta name="keywords" content="keyword1, keyword2, keyword3">
+
+    <link href="~/StyleSheet.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div id="wrapper">
+
+        <div id="header">
+
+            <div class="banner_img">
+                <h1>University Course and Result Management System </h1>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <ul>
+                <li>@Html.ActionLink("Department", "Index", "Department")</li>
+                <li>@Html.ActionLink("Course", "Index", "Course")</li>
+                <li>@Html.ActionLink("Teacher", "Index", "Teacher")</li>
+                <li>@Html.ActionLink("Student", "Index", "Student")</li>
+                <li>@Html.ActionLink("Enroll Course", "Enroll", "Enroll")</li>
+                <li>@Html.ActionLink("Allocate Rooms", "Index", "AllocateClassRoom")</li>
+            </ul>
+        </div>
+
+        <div id="page_content">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                    <h3>Teacher Entry</h3>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-header">
+                    <li>@Html.ActionLink("Save Teacher", "SaveTeacher", "Teacher")</li>
+                    <li>@Html.ActionLink("Course Assign To Teacher", "AssignToTeacher", "CourseAssign")</li>
+                    <li>@Html.ActionLink("View Course Statics", "CourseStatics", "CourseAssign")</li>
+
+                </ul>
+            </div>
+            <div class="clear"></div>
+
+            <!--start footer from here-->
+            <div id="footer">
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
